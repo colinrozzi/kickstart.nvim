@@ -235,13 +235,16 @@ require('lazy').setup({
   -- require 'kickstart.plugins.debug',
 
   -- NOTE: The import below can automatically add your own plugins, configuration, etc from `lua/custom/plugins/*.lua`
-  --    You can use this folder to prevent any conflicts with this init.lua if you're interested in keeping
-  --    up-to-date with whatever is in the kickstart repo.
-  --    Uncomment the following line and add your plugins to `lua/custom/plugins/*.lua` to get going.
-  --
-  --    For additional information see: https://github.com/folke/lazy.nvim#-structuring-your-plugins
+--    You can use this folder to prevent any conflicts with this init.lua if you're interested in keeping
+--    up-to-date with whatever is in the kickstart repo.
+--    Uncomment the following line and add your plugins to `lua/custom/plugins/*.lua` to get going.
+--
+--    For additional information see: https://github.com/folke/lazy.nvim#-structuring-your-plugins
   { import = 'custom.plugins' },
 }, {})
+
+-- Load custom base configuration
+require('custom.base')
 
 -- [[ Setting options ]]
 -- See `:help vim.o`
@@ -339,11 +342,28 @@ vim.keymap.set('n', '<leader>sw', require('telescope.builtin').grep_string, { de
 vim.keymap.set('n', '<leader>sg', require('telescope.builtin').live_grep, { desc = '[S]earch by [G]rep' })
 vim.keymap.set('n', '<leader>sd', require('telescope.builtin').diagnostics, { desc = '[S]earch [D]iagnostics' })
 
+-- Python/Django specific searches
+vim.keymap.set('n', '<leader>sp', function()
+  require('telescope.builtin').find_files({
+    find_command = { 'find', 'hadrius', '-name', '*.py', '-type', 'f' }
+  })
+end, { desc = '[S]earch [P]ython files' })
+
+vim.keymap.set('n', '<leader>st', function()
+  require('telescope.builtin').find_files({
+    find_command = { 'find', 'hadrius', '-name', 'test_*.py', '-o', '-name', '*_test.py', '-type', 'f' }
+  })
+end, { desc = '[S]earch [T]est files' })
+
 -- [[ Configure Treesitter ]]
 -- See `:help nvim-treesitter`
 require('nvim-treesitter.configs').setup {
   -- Add languages to be installed here that you want installed for treesitter
-  ensure_installed = { 'c', 'cpp', 'go', 'lua', 'python', 'rust', 'tsx', 'typescript', 'vimdoc', 'vim' },
+  ensure_installed = { 
+    'c', 'cpp', 'go', 'lua', 'python', 'rust', 'tsx', 'typescript', 'vimdoc', 'vim',
+    -- Python/Django related
+    'html', 'htmldjango', 'sql', 'yaml', 'toml', 'json', 'dockerfile'
+  },
 
   -- Autoinstall languages that are not installed. Defaults to false (but you can change for yourself!)
   auto_install = false,
@@ -468,10 +488,23 @@ end
 local servers = {
   -- clangd = {},
   -- gopls = {},
-  -- pyright = {},
   -- rust_analyzer = {},
   -- tsserver = {},
   -- html = { filetypes = { 'html', 'twig', 'hbs'} },
+
+  -- Python LSP with Django support
+  pyright = {
+    settings = {
+      python = {
+        analysis = {
+          autoSearchPaths = true,
+          useLibraryCodeForTypes = true,
+          diagnosticMode = "workspace",
+          typeCheckingMode = "basic",
+        },
+      },
+    },
+  },
 
   lua_ls = {
     Lua = {
@@ -488,6 +521,9 @@ require('neodev').setup()
 local capabilities = vim.lsp.protocol.make_client_capabilities()
 capabilities = require('cmp_nvim_lsp').default_capabilities(capabilities)
 
+-- Setup mason first
+require('mason').setup()
+
 -- Ensure the servers above are installed
 local mason_lspconfig = require 'mason-lspconfig'
 
@@ -495,16 +531,15 @@ mason_lspconfig.setup {
   ensure_installed = vim.tbl_keys(servers),
 }
 
-mason_lspconfig.setup_handlers {
-  function(server_name)
-    require('lspconfig')[server_name].setup {
-      capabilities = capabilities,
-      on_attach = on_attach,
-      settings = servers[server_name],
-      filetypes = (servers[server_name] or {}).filetypes,
-    }
-  end,
-}
+-- Setup each server manually to avoid setup_handlers compatibility issues
+for server_name in pairs(servers) do
+  require('lspconfig')[server_name].setup {
+    capabilities = capabilities,
+    on_attach = on_attach,
+    settings = servers[server_name],
+    filetypes = (servers[server_name] or {}).filetypes,
+  }
+end
 
 -- [[ Configure nvim-cmp ]]
 -- See `:help cmp`
@@ -549,6 +584,7 @@ cmp.setup {
     end, { 'i', 's' }),
   },
   sources = {
+    { name = 'copilot', group_index = 2 },
     { name = 'nvim_lsp' },
     { name = 'luasnip' },
   },
