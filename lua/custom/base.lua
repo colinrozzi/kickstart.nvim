@@ -19,7 +19,6 @@ vim.api.nvim_create_autocmd('FileType', {
   pattern = 'python',
   callback = function()
     -- Set Python-specific options
-    vim.opt_local.colorcolumn = '120'  -- Match your project's line length
     vim.opt_local.textwidth = 120
   end,
 })
