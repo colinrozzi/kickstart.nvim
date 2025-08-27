@@ -23,6 +23,19 @@ vim.api.nvim_create_autocmd('FileType', {
   end,
 })
 
+-- Copy file path keymaps
+vim.keymap.set('n', '<leader>yp', function()
+  local path = vim.fn.expand('%:p')
+  vim.fn.setreg('+', path)
+  vim.notify('Copied to clipboard: ' .. path, vim.log.levels.INFO)
+end, { desc = '[Y]ank file [P]ath (absolute)' })
+
+vim.keymap.set('n', '<leader>yr', function()
+  local path = vim.fn.expand('%:.')
+  vim.fn.setreg('+', path)
+  vim.notify('Copied to clipboard: ' .. path, vim.log.levels.INFO)
+end, { desc = '[Y]ank [R]elative path' })
+
 -- Django-specific keymaps and settings
 vim.keymap.set('n', '<leader>dm', function()
   require('telescope.builtin').find_files({
