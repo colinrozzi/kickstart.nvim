@@ -59,9 +59,22 @@ vim.keymap.set('n', '<leader>du', function()
 end, { desc = '[D]jango [U]rls' })
 
 -- Quick access to manage.py commands
-vim.keymap.set('n', '<leader>dr', ':!cd ' .. vim.fn.getcwd() .. '/hadrius && python manage.py runserver<CR>', 
+vim.keymap.set('n', '<leader>dr', ':!cd ' .. vim.fn.getcwd() .. '/hadrius && python manage.py runserver<CR>',
   { desc = '[D]jango [R]unserver' })
-vim.keymap.set('n', '<leader>ds', ':!cd ' .. vim.fn.getcwd() .. '/hadrius && python manage.py shell<CR>', 
+vim.keymap.set('n', '<leader>ds', ':!cd ' .. vim.fn.getcwd() .. '/hadrius && python manage.py shell<CR>',
   { desc = '[D]jango [S]hell' })
-vim.keymap.set('n', '<leader>dt', ':!cd ' .. vim.fn.getcwd() .. '/hadrius && python manage.py test<CR>', 
+vim.keymap.set('n', '<leader>dt', ':!cd ' .. vim.fn.getcwd() .. '/hadrius && python manage.py test<CR>',
   { desc = '[D]jango [T]est' })
+
+-- Toggle line wrapping with visual feedback
+vim.keymap.set('n', '<leader>tw', function()
+  local wrap = vim.wo.wrap
+  vim.wo.wrap = not wrap
+  vim.wo.linebreak = not wrap -- Break at word boundaries when wrapping
+
+  if not wrap then
+    vim.notify('Line wrap: ON', vim.log.levels.INFO)
+  else
+    vim.notify('Line wrap: OFF', vim.log.levels.INFO)
+  end
+end, { desc = '[T]oggle line [W]rap' })
