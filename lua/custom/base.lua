@@ -78,3 +78,16 @@ vim.keymap.set('n', '<leader>tw', function()
     vim.notify('Line wrap: OFF', vim.log.levels.INFO)
   end
 end, { desc = '[T]oggle line [W]rap' })
+
+-- Toggle 120-character line with visual feedback
+vim.keymap.set('n', '<leader>tc', function()
+  local current_cc = vim.wo.colorcolumn
+
+  if current_cc == '' or current_cc == '0' then
+    vim.wo.colorcolumn = '120'
+    vim.notify('Colorcolumn: ON (120 chars)', vim.log.levels.INFO)
+  else
+    vim.wo.colorcolumn = ''
+    vim.notify('Colorcolumn: OFF', vim.log.levels.INFO)
+  end
+end, { desc = '[T]oggle [C]olorcolumn (120 chars)' })
