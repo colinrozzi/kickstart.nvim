@@ -8,6 +8,11 @@ vim.opt.tabstop = 4
 vim.opt.softtabstop = 4
 vim.opt.shiftwidth = 4
 
+-- Keep 5 lines visible above and below cursor
+vim.opt.scrolloff = 5
+-- Keep 8 characters visible to the left and right of cursor
+vim.opt.sidescrolloff = 8
+
 -- Copilot keymaps
 vim.keymap.set('n', '<leader>cpd', ':Copilot disable<CR>', { desc = '[C]opilot [D]isable', silent = true })
 vim.keymap.set('n', '<leader>cpe', ':Copilot enable<CR>', { desc = '[C]opilot [E]nable', silent = true })
