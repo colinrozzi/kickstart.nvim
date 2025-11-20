@@ -3,26 +3,41 @@
 --
 -- See the kickstart.nvim README for more information
 return {
+  -- Snacks.nvim - Modern plugin collection including file explorer
   {
-    "nvim-neo-tree/neo-tree.nvim",
-    version = "*",
-    dependencies = {
-      "nvim-lua/plenary.nvim",
-      "nvim-tree/nvim-web-devicons", -- not strictly required, but recommended
-      "MunifTanjim/nui.nvim",
-    },
-    cmd = "Neotree",
-    keys = {
-      { "\\", ":Neotree reveal<CR>", desc = "NeoTree reveal", silent = true },
-    },
+    "folke/snacks.nvim",
+    priority = 1000,
+    lazy = false,
+    ---@type snacks.Config
     opts = {
-      filesystem = {
-        window = {
-          mappings = {
-            ["\\"] = "close_window",
+      -- Enable the modules you want
+      bigfile = { enabled = true },
+      notifier = { enabled = true },
+      quickfile = { enabled = true },
+      statuscolumn = { enabled = true },
+      words = { enabled = true },
+      
+      -- Explorer configuration
+      explorer = {
+        replace_netrw = true, -- Replace netrw with snacks explorer
+        trash = true, -- Use system trash when deleting files
+      },
+      
+      -- Picker configuration for explorer
+      picker = {
+        sources = {
+          explorer = {
+            -- Explorer picker settings
+            git_status = true, -- Show git status indicators
+            diagnostics = true, -- Show diagnostic indicators
           },
         },
       },
+    },
+    keys = {
+      { "\\", function() Snacks.explorer.open() end, desc = "Explorer" },
+      { "<leader>e", function() Snacks.explorer.open() end, desc = "[E]xplorer" },
+      { "<leader>E", function() Snacks.explorer.reveal() end, desc = "[E]xplorer Reveal" },
     },
   },
 }
