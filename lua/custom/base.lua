@@ -13,6 +13,16 @@ vim.opt.scrolloff = 5
 -- Keep 8 characters visible to the left and right of cursor
 vim.opt.sidescrolloff = 8
 
+-- Add minimal padding to the sides of the editor
+vim.opt.foldcolumn = '1'  -- Add 1 column of padding on the left
+vim.opt.fillchars = { fold = ' ', foldsep = ' ' }
+
+-- Optional: Center the text with padding on both sides
+-- Uncomment the lines below if you want centered editing with padding
+-- This creates a focused writing experience
+-- vim.opt.columns = 120  -- Set a maximum width
+-- vim.cmd([[autocmd VimResized * if &columns > 120 | set columns=120 | endif]])
+
 -- Copilot keymaps
 vim.keymap.set('n', '<leader>cpd', ':Copilot disable<CR>', { desc = '[C]opilot [D]isable', silent = true })
 vim.keymap.set('n', '<leader>cpe', ':Copilot enable<CR>', { desc = '[C]opilot [E]nable', silent = true })
@@ -96,3 +106,16 @@ vim.keymap.set('n', '<leader>tc', function()
     vim.notify('Colorcolumn: OFF', vim.log.levels.INFO)
   end
 end, { desc = '[T]oggle [C]olorcolumn (120 chars)' })
+
+-- Keymap to toggle fold column padding
+vim.keymap.set('n', '<leader>tp', function()
+  local current_fc = vim.wo.foldcolumn
+  
+  if current_fc == '0' then
+    vim.wo.foldcolumn = '1'
+    vim.notify('Padding: ON', vim.log.levels.INFO)
+  else
+    vim.wo.foldcolumn = '0'
+    vim.notify('Padding: OFF', vim.log.levels.INFO)
+  end
+end, { desc = '[T]oggle [P]adding' })
