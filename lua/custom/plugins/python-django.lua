@@ -17,6 +17,17 @@ return {
       },
       -- Custom formatter configurations to match your project settings
       formatters = {
+        prettier = {
+          args = {
+            "--bracket-spacing=false",  -- Match pre-commit: ({}) not ({ })
+            "--single-quote=false",     -- Match your .prettierrc
+            "--arrow-parens=always",    -- Match your .prettierrc
+            "--print-width=120",        -- Match your .prettierrc
+            "--tab-width=2",           -- Match your .prettierrc
+            "--semi=true",             -- Match your .prettierrc
+            "--stdin-filepath", "$FILENAME"
+          },
+        },
         black = {
           args = {
             "--line-length", "120",

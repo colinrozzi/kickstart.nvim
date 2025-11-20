@@ -361,6 +361,8 @@ require('nvim-treesitter.configs').setup {
   -- Add languages to be installed here that you want installed for treesitter
   ensure_installed = { 
     'c', 'cpp', 'go', 'lua', 'python', 'rust', 'tsx', 'typescript', 'vimdoc', 'vim',
+    -- Frontend related
+    'javascript', 'css', 'scss', 'markdown',
     -- Python/Django related
     'html', 'htmldjango', 'sql', 'yaml', 'toml', 'json', 'dockerfile'
   },
@@ -489,8 +491,69 @@ local servers = {
   -- clangd = {},
   -- gopls = {},
   -- rust_analyzer = {},
-  -- tsserver = {},
   -- html = { filetypes = { 'html', 'twig', 'hbs'} },
+
+  -- TypeScript/JavaScript LSP
+  ts_ls = {
+    settings = {
+      typescript = {
+        preferences = {
+          includePackageJsonAutoImports = "on",
+          importModuleSpecifier = "relative",
+        },
+        suggest = {
+          includeCompletionsForModuleExports = true,
+        },
+        inlayHints = {
+          includeInlayParameterNameHints = "all",
+          includeInlayFunctionParameterTypeHints = true,
+          includeInlayVariableTypeHints = true,
+        },
+      },
+      javascript = {
+        preferences = {
+          includePackageJsonAutoImports = "on",
+          importModuleSpecifier = "relative",
+        },
+      },
+    },
+    filetypes = {
+      "javascript",
+      "javascriptreact", 
+      "typescript",
+      "typescriptreact",
+    },
+  },
+
+  -- Tailwind CSS LSP
+  tailwindcss = {
+    settings = {
+      tailwindCSS = {
+        experimental = {
+          classRegex = {
+            -- Support for clsx/cn utility functions
+            {"clsx\\(([^)]*)\\)", "[\"'`]([^\"'`]*)[\"'`]"},
+            {"cn\\(([^)]*)\\)", "[\"'`]([^\"'`]*)[\"'`]"},
+            {"cva\\(([^)]*)\\)", "[\"'`]([^\"'`]*)[\"'`]"},
+          },
+        },
+        validate = true,
+        lint = {
+          cssConflict = "warning",
+          invalidApply = "error",
+          invalidTailwindDirective = "error",
+        },
+      },
+    },
+    filetypes = {
+      "javascript",
+      "javascriptreact",
+      "typescript",
+      "typescriptreact",
+      "html",
+      "css",
+    },
+  },
 
   -- Python LSP with Django support
   pyright = {
